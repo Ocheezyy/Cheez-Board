@@ -1,21 +1,13 @@
 import { create } from 'zustand';
+import { ITaskPopulated } from "@/db/models";
 
-type Task = {
-    id: string;
-    title: string;
-    description: string;
-    status: string;
-    userId: string;
-    comments: string[];
-    files: string[];
-};
 
 type TaskStore = {
-    tasks: Task[];
-    addTask: (task: Task) => void;
-    updateTask: (id: string, updatedTask: Partial<Task>) => void;
+    tasks: ITaskPopulated[];
+    addTask: (task: ITaskPopulated) => void;
+    updateTask: (id: string, updatedTask: Partial<ITaskPopulated>) => void;
     deleteTask: (id: string) => void;
-    setTasks: (tasks: Task[]) => void;
+    setTasks: (tasks: ITaskPopulated[]) => void;
 };
 
 export const useTaskStore = create<TaskStore>((set) => ({

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { File } from '@/db/models';
+import {File, Task} from '@/db/models';
 import { connectToDatabase } from "@/db/connect";
 
 await connectToDatabase();
@@ -32,7 +32,8 @@ export async function PUT(request: Request) {
         if (!file) {
             return NextResponse.json({ error: 'File not found' }, { status: 404 });
         }
-        return NextResponse.json(file);
+        const task = await Task.findOne({ "files._id": id });
+        return NextResponse.json({ file, taskId: task?.id });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ error: 'Failed to update file' }, { status: 500 });
@@ -42,11 +43,13 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
     try {
         const { id } = await request.json();
+
+        const task = await Task.findOne({ "files._id": id });
         const file = await File.findByIdAndDelete(id);
         if (!file) {
             return NextResponse.json({ error: 'File not found' }, { status: 404 });
         }
-        return NextResponse.json({ message: 'File deleted' });
+        return NextResponse.json({ message: 'File deleted', taskId: task?.id });
     } catch (error) {
         console.log(error);
         return NextResponse.json({ error: 'Failed to delete file' }, { status: 500 });

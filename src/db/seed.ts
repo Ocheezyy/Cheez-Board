@@ -43,6 +43,7 @@ async function seed() {
     priority: 'high',
     status: 'todo',
     userId: user1._id,
+    dueDate: new Date(2026, 10, 20)
   });
 
   const task2 = await Task.create({
@@ -51,6 +52,7 @@ async function seed() {
     priority: 'low',
     status: 'in_progress',
     userId: user2._id,
+    dueDate: new Date(2025, 7, 1)
   });
 
   const task3 = await Task.create({
@@ -59,6 +61,7 @@ async function seed() {
     priority: 'low',
     status: 'done',
     userId: user3._id,
+    dueDate: new Date(2025, 2, 11)
   });
 
   console.log('Seeded tasks');
