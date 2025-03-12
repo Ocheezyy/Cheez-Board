@@ -1,4 +1,4 @@
-import { pgTable, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, serial, text, timestamp, varchar, integer } from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: serial('id').primaryKey(),
@@ -23,5 +23,16 @@ export const comments = pgTable('comments', {
   content: text('content').notNull(),
   taskId: serial('task_id').references(() => tasks.id),
   userId: serial('user_id').references(() => users.id),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const files = pgTable('files', {
+  id: serial('id').primaryKey(),
+  url: text('url').notNull(),
+  key: text('key').notNull(), // The unique key for the file in UploadThing
+  name: text('name').notNull(),
+  size: integer('size').notNull(), // bytes
+  taskId: integer('task_id').references(() => tasks.id), // Link to the task
+  userId: integer('user_id').references(() => users.id), // Link to the user who uploaded the file
   createdAt: timestamp('created_at').defaultNow(),
 });
