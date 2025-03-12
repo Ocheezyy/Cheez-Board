@@ -1,9 +1,6 @@
-import mongoose from 'mongoose';
 import "dotenv/config";
-import { User } from './models/user';
-import { Task } from './models/task';
-import { Comment } from './models/comment';
-import { File } from './models/file';
+import mongoose from 'mongoose';
+import { File, Comment, Task, User } from '@/db/models';
 
 async function seed() {
   // Connect to MongoDB
@@ -43,6 +40,7 @@ async function seed() {
   const task1 = await Task.create({
     title: 'Plan Cheese Tasting Event',
     description: 'Organize a cheese tasting event with at least 5 varieties.',
+    priority: 'high',
     status: 'todo',
     userId: user1._id,
   });
@@ -50,6 +48,7 @@ async function seed() {
   const task2 = await Task.create({
     title: 'Buy Brie for the Party',
     description: 'Purchase 3 wheels of Brie from the local cheesemonger.',
+    priority: 'low',
     status: 'in_progress',
     userId: user2._id,
   });
@@ -57,6 +56,7 @@ async function seed() {
   const task3 = await Task.create({
     title: 'Create Cheese Board Layout',
     description: 'Design a visually appealing cheese board layout.',
+    priority: 'low',
     status: 'done',
     userId: user3._id,
   });
