@@ -1,30 +1,17 @@
-"use server"
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { tasks } from "@/db/schema";
-import { NewTask, Task } from "@/db/types";
-import { revalidatePath } from "next/cache";
+import { Task } from '@/db/models';
 
-export const getTasks = async () => {
-    return db.select().from(tasks);
-}
+async function getTaskWithCommentsAndFiles(taskId: string) {
+    const task = await Task.findById(taskId)
+        .populate('comments')
+        .populate('files')
+        .exec();
 
-export const createTask = async (task: NewTask): Promise<void> => {
-    await db.insert(tasks).values(task);
-}
+    if (!task) {
+        console.log('Task not found');
+        return;
+    }
 
-export const deleteTask = async (taskId: number): Promise<void> => {
-    await db.delete(tasks).where(eq(tasks.id, taskId));
-}
-
-export const editTask = async (task: Task): Promise<void> => {
-    await db.update(tasks)
-        .set({
-            title: task.title,
-            description: task.description,
-            status: task.status,
-            userId: task.userId,
-        })
-        .where(eq(tasks.id, task.id))
-    revalidatePath("/");
+    console.log('Task:', task);
+    console.log('Comments:', task.comments);
+    console.log('Files:', task.files);
 }

@@ -10,62 +10,47 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-methods";
-import { Comment, FileAttachment, Task, User } from "@/lib/types"
+import { ITaskPopulated } from "@/db/models";
+import { useUserStore } from "@/stores/useUserStore";
+import { useCreateComment } from "@/hooks/useComments";
+import { useCreateFile } from "@/hooks/useFiles";
 
 interface TaskDetailViewProps {
-    task: Task
-    users: User[]
+    task: ITaskPopulated
     onClose: () => void
-    onUpdate: (task: Task) => void
 }
 
-export function TaskDetailView({ task, users, onClose, onUpdate }: TaskDetailViewProps) {
+export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
+    const users = useUserStore((state) => state.users);
+    const { mutate: createComment } = useCreateComment();
+    const { mutate: createFile } = useCreateFile();
     const [newComment, setNewComment] = useState("")
     const [newAttachment, setNewAttachment] = useState<File | null>(null)
     const [attachmentName, setAttachmentName] = useState("")
 
-    const assignee = users.find((user) => user.id === task.assigneeId)
-    const dueDate = new Date(task.dueDate)
-    const isOverdue = dueDate < new Date() && task.status !== "completed"
+    const assignee = users.find((user) => user.id === task.userId.toString())
+    const dueDate = task.dueDate
+    const isOverdue = dueDate < new Date() && task.status !== "done"
 
     const handleAddComment = () => {
-        if (!newComment.trim()) return
+        if (!newComment.trim()) return;
 
-        const comment: Comment = {
-            id: `comment-${Date.now()}`,
-            userId: "1",
-            content: newComment,
-            createdAt: new Date().toISOString(),
-        }
-
-        const updatedTask = {
-            ...task,
-            comments: [...(task.comments || []), comment],
-        }
-
-        onUpdate(updatedTask)
+        createComment({ content: newComment, userId: users[0].id, taskId: task.id })
         setNewComment("")
     }
 
     const handleAddAttachment = () => {
         if (!newAttachment || !attachmentName.trim()) return
 
-        const attachment: FileAttachment = {
-            id: `file-${Date.now()}`,
+        createFile({
+            url: URL.createObjectURL(newAttachment),
+            key: "key-here",
             name: attachmentName || newAttachment.name,
             size: newAttachment.size,
-            type: newAttachment.type,
-            uploadedBy: "1",
-            uploadedAt: new Date().toISOString(),
-            url: URL.createObjectURL(newAttachment),
-        }
+            userId: users[0].id,
+            taskId: task.id,
+        })
 
-        const updatedTask = {
-            ...task,
-            attachments: [...(task.attachments || []), attachment],
-        }
-
-        onUpdate(updatedTask)
         setNewAttachment(null)
         setAttachmentName("")
     }
@@ -95,7 +80,7 @@ export function TaskDetailView({ task, users, onClose, onUpdate }: TaskDetailVie
 
             <div className="flex flex-wrap gap-2">
                 <Badge variant="outline" className={getStatusColor(task.status)}>
-                    {task.status === "todo" ? "To Do" : task.status === "in-progress" ? "In Progress" : "Completed"}
+                    {task.status === "todo" ? "To Do" : task.status === "in_progress" ? "In Progress" : "Completed"}
                 </Badge>
                 <Badge variant="outline" className={getPriorityColor(task.priority)}>
                     {getPriorityIcon(task.priority)}
@@ -123,7 +108,7 @@ export function TaskDetailView({ task, users, onClose, onUpdate }: TaskDetailVie
                 {assignee ? (
                     <div className="flex items-center gap-2">
                         <Avatar>
-                            <AvatarImage src={assignee.avatarUrl} alt={assignee.name} />
+                            <AvatarImage src={""} alt={assignee.name} />
                             <AvatarFallback>{assignee.name.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
@@ -173,16 +158,16 @@ export function TaskDetailView({ task, users, onClose, onUpdate }: TaskDetailVie
                     </div>
                 </div>
 
-                {task.attachments && task.attachments.length > 0 ? (
+                {task.files && task.files.length > 0 ? (
                     <div className="space-y-2">
-                        {task.attachments.map((attachment) => (
-                            <Card key={attachment.id} className="flex items-center justify-between p-3">
+                        {task.files.map((attachment) => (
+                            <Card key={attachment.id.toString()} className="flex items-center justify-between p-3">
                                 <div className="flex items-center gap-2">
                                     <FileText className="h-5 w-5 text-muted-foreground" />
                                     <div>
                                         <p className="font-medium">{attachment.name}</p>
                                         <p className="text-xs text-muted-foreground">
-                                            {formatFileSize(attachment.size)} • {format(new Date(attachment.uploadedAt), "MMM d, yyyy")}
+                                            {formatFileSize(attachment.size)} • {format(new Date(attachment.createdAt), "MMM d, yyyy")}
                                         </p>
                                     </div>
                                 </div>
@@ -225,7 +210,7 @@ export function TaskDetailView({ task, users, onClose, onUpdate }: TaskDetailVie
                             return (
                                 <div key={comment.id} className="flex gap-3">
                                     <Avatar className="h-8 w-8">
-                                        <AvatarImage src={commentUser?.avatarUrl} alt={commentUser?.name || "User"} />
+                                        <AvatarImage src={""} alt={commentUser?.name || "User"} />
                                         <AvatarFallback>{commentUser?.name.charAt(0) || "U"}</AvatarFallback>
                                     </Avatar>
                                     <div className="space-y-1">

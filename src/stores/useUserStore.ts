@@ -1,18 +1,13 @@
 import { create } from 'zustand';
+import { IUser } from "@/db/models";
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    password: string;
-};
 
 type UserStore = {
-    users: User[];
-    addUser: (user: User) => void;
-    updateUser: (id: string, updatedUser: Partial<User>) => void;
+    users: IUser[];
+    addUser: (user: IUser) => void;
+    updateUser: (id: string, updatedUser: Partial<IUser>) => void;
     deleteUser: (id: string) => void;
-    setUsers: (users: User[]) => void;
+    setUsers: (users: IUser[]) => void;
 };
 
 export const useUserStore = create<UserStore>((set) => ({

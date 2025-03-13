@@ -8,7 +8,7 @@ export interface ITask {
     description?: string;
     status: "todo" | "in_progress" | "done";
     priority: "low" | "medium" | "high";
-    userId: Schema.Types.ObjectId;
+    userId: Schema.Types.ObjectId | string;
     comments: string[];
     files: string[];
     dueDate: Date;
@@ -22,7 +22,7 @@ export interface ITaskPopulated {
     description?: string;
     status: "todo" | "in_progress" | "done";
     priority: "low" | "medium" | "high";
-    userId: Schema.Types.ObjectId;
+    userId: Schema.Types.ObjectId | string;
     files: IFile[];
     comments: IComment[];
     dueDate: Date;
