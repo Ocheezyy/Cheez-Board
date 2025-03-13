@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 export interface IFile {
     id: Schema.Types.ObjectId | string;
@@ -19,4 +19,4 @@ const fileSchema = new Schema<IFile>({
     createdAt: { type: Date, default: Date.now },
 });
 
-export const File = model('File', fileSchema);
+export const File = models.File || model('File', fileSchema);

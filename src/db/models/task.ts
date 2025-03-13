@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import {Schema, model, models} from 'mongoose';
 import { IComment } from "./comment";
 import { IFile } from "./file";
 
@@ -43,4 +43,4 @@ const taskSchema = new Schema<ITask>({
     updatedAt: { type: Date, default: Date.now },
 });
 
-export const Task = model('Task', taskSchema);
+export const Task = models.Task || model('Task', taskSchema);

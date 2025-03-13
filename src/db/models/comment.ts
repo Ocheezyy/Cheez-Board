@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import {Schema, model, models} from 'mongoose';
 
 export interface IComment {
     id: string;
@@ -13,4 +13,5 @@ const commentSchema = new Schema<IComment>({
     createdAt: { type: Date, default: Date.now },
 });
 
-export const Comment = model('Comment', commentSchema);
+
+export const Comment = models.Comment || model('Comment', commentSchema);
