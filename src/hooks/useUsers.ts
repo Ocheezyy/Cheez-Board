@@ -1,18 +1,24 @@
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '@/stores/useUserStore';
+import {useEffect} from "react";
 
-// Fetch all users
 export function useUsers() {
-    return useQuery({
+    const { data, isLoading, error, isSuccess } =  useQuery({
         queryKey: ['users'],
         queryFn: async () => {
             const response = await fetch('/api/users');
             if (!response.ok) throw new Error('Failed to fetch users');
             return response.json();
-        },
-        // @ts-expect-error Update types here
-        onSuccess: (data) => {
-            useUserStore.getState().setUsers(data);
-        },
+        }
     });
+
+    const setUsers = useUserStore((state) => state.setUsers);
+
+    useEffect(() => {
+        if (data) {
+            setUsers(data);
+        }
+    }, [data, setUsers]);
+
+    return { data, isLoading, error, isSuccess };
 }

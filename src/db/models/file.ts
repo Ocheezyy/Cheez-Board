@@ -1,7 +1,7 @@
 import { Schema, model, models } from 'mongoose';
 
 export interface IFile {
-    id: Schema.Types.ObjectId | string;
+    _id: string;
     url: string;
     key: string;
     name: string;

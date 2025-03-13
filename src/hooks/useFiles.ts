@@ -27,7 +27,7 @@ export function useCreateFile() {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             useTaskStore.getState().updateTask(variables.taskId, {
-                files: [...(useTaskStore.getState().tasks.find((t) => t.id === variables.taskId)?.files || []), data],
+                files: [...(useTaskStore.getState().tasks.find((t) => t._id === variables.taskId)?.files || []), data],
             });
         },
     });
@@ -49,8 +49,8 @@ export function useUpdateFile() {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             useTaskStore.getState().updateTask(data.taskId, {
                 files: useTaskStore.getState().tasks
-                    .find((t) => t.id === data.taskId)
-                    ?.files.map((f) => (f.id === data.file.id ? data.file : f)),
+                    .find((t) => t._id === data.taskId)
+                    ?.files.map((f) => (f._id === data.file._id ? data.file : f)),
             });
         },
     });
@@ -72,8 +72,8 @@ export function useDeleteFile() {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             useTaskStore.getState().updateTask(data.taskId, {
                 files: useTaskStore.getState().tasks
-                    .find((t) => t.id === data.taskId)
-                    ?.files.filter((f) => f.id !== fileId),
+                    .find((t) => t._id === data.taskId)
+                    ?.files.filter((f) => f._id !== fileId),
             });
         },
     });

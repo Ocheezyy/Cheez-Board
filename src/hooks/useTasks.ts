@@ -1,19 +1,27 @@
+import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useTaskStore } from '@/stores/useTaskStore';
 
 export function useTasks() {
-    return useQuery({
+    const { data, isLoading, error, isSuccess }  = useQuery({
         queryKey: ['tasks'],
         queryFn: async () => {
             const response = await fetch('/api/tasks');
             if (!response.ok) throw new Error('Failed to fetch tasks');
             return response.json();
         },
-        // @ts-expect-error need to set types
-        onSuccess: (data) => {
-            useTaskStore.getState().setTasks(data);
-        },
     });
+
+    const setTasks = useTaskStore((state) => state.setTasks);
+
+    useEffect(() => {
+        if (data) {
+            console.log(data);
+            setTasks(data);
+        }
+    }, [data, setTasks]);
+
+    return { data, isLoading, error, isSuccess };
 }
 
 export function useCreateTask() {
@@ -38,18 +46,18 @@ export function useCreateTask() {
 export function useUpdateTask() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, ...updatedTask }: { id: string; [key: string]: any }) => {
+        mutationFn: async ({ _id, ...updatedTask }: { _id: string; [key: string]: any }) => {
             const response = await fetch(`/api/tasks`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id, ...updatedTask }),
+                body: JSON.stringify({ _id, ...updatedTask }),
             });
             if (!response.ok) throw new Error('Failed to update task');
             return response.json();
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
-            useTaskStore.getState().updateTask(data.id, data);
+            useTaskStore.getState().updateTask(data._id, data);
         },
     });
 }
@@ -68,7 +76,7 @@ export function useDeleteTask() {
         },
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
-            useTaskStore.getState().deleteTask(data.id);
+            useTaskStore.getState().deleteTask(data._id);
         },
     });
 }

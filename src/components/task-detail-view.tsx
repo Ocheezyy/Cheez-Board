@@ -28,14 +28,14 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
     const [newAttachment, setNewAttachment] = useState<File | null>(null)
     const [attachmentName, setAttachmentName] = useState("")
 
-    const assignee = users.find((user) => user.id === task.userId.toString())
+    const assignee = users.find((user) => user._id === task.userId.toString())
     const dueDate = task.dueDate
     const isOverdue = dueDate < new Date() && task.status !== "done"
 
     const handleAddComment = () => {
         if (!newComment.trim()) return;
 
-        createComment({ content: newComment, userId: users[0].id, taskId: task.id })
+        createComment({ content: newComment, userId: users[0]._id, taskId: task._id })
         setNewComment("")
     }
 
@@ -47,8 +47,8 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
             key: "key-here",
             name: attachmentName || newAttachment.name,
             size: newAttachment.size,
-            userId: users[0].id,
-            taskId: task.id,
+            userId: users[0]._id,
+            taskId: task._id,
         })
 
         setNewAttachment(null)
@@ -161,7 +161,7 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                 {task.files && task.files.length > 0 ? (
                     <div className="space-y-2">
                         {task.files.map((attachment) => (
-                            <Card key={attachment.id.toString()} className="flex items-center justify-between p-3">
+                            <Card key={attachment._id} className="flex items-center justify-between p-3">
                                 <div className="flex items-center gap-2">
                                     <FileText className="h-5 w-5 text-muted-foreground" />
                                     <div>
@@ -206,9 +206,9 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                 {task.comments && task.comments.length > 0 ? (
                     <div className="space-y-4">
                         {task.comments.map((comment) => {
-                            const commentUser = users.find((user) => user.id === comment.userId)
+                            const commentUser = users.find((user) => user._id === comment.userId)
                             return (
-                                <div key={comment.id} className="flex gap-3">
+                                <div key={comment._id} className="flex gap-3">
                                     <Avatar className="h-8 w-8">
                                         <AvatarImage src={""} alt={commentUser?.name || "User"} />
                                         <AvatarFallback>{commentUser?.name.charAt(0) || "U"}</AvatarFallback>

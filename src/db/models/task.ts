@@ -3,7 +3,7 @@ import { IComment } from "./comment";
 import { IFile } from "./file";
 
 export interface ITask {
-    id: string;
+    _id: string;
     title: string;
     description?: string;
     status: "todo" | "in_progress" | "done";
@@ -17,7 +17,7 @@ export interface ITask {
 }
 
 export interface ITaskPopulated {
-    id: string;
+    _id: string;
     title: string;
     description?: string;
     status: "todo" | "in_progress" | "done";

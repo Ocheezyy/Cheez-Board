@@ -27,7 +27,7 @@ export function useCreateComment() {
         onSuccess: (data, variables) => {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             useTaskStore.getState().updateTask(variables.taskId, {
-                comments: [...(useTaskStore.getState().tasks.find((t) => t.id === variables.taskId)?.comments || []), data],
+                comments: [...(useTaskStore.getState().tasks.find((t) => t._id === variables.taskId)?.comments || []), data],
             });
         },
     });
@@ -50,8 +50,8 @@ export function useUpdateComment() {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             useTaskStore.getState().updateTask(data.taskId, {
                 comments: useTaskStore.getState().tasks
-                    .find((t) => t.id === data.taskId)
-                    ?.comments.map((c) => (c.id === data.comment.id ? data.comment : c)),
+                    .find((t) => t._id === data.taskId)
+                    ?.comments.map((c) => (c._id === data.comment._id ? data.comment : c)),
             });
         },
     });
@@ -74,8 +74,8 @@ export function useDeleteComment() {
             queryClient.invalidateQueries({ queryKey: ['tasks'] });
             useTaskStore.getState().updateTask(data.taskId, {
                 comments: useTaskStore.getState().tasks
-                    .find((t) => t.id === data.taskId)
-                    ?.comments.filter((c) => c.id !== commentId),
+                    .find((t) => t._id === data.taskId)
+                    ?.comments.filter((c) => c._id !== commentId),
             });
         },
     });
