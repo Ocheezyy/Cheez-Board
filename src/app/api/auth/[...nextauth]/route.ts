@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 
 await connectToDatabase();
 
-export const authOptions: NextAuthOptions = {
+const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
