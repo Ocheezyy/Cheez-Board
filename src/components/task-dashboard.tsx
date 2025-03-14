@@ -44,7 +44,7 @@ export function TaskDashboard() {
     });
   }, [ filter, tasks ]);
 
-  const handleCreateTask = (taskData: Omit<ITask, "id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
+  const handleCreateTask = (taskData: Omit<ITask, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
     createTask({
       title: taskData.title,
       description: taskData.description || "",

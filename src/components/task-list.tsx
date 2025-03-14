@@ -56,10 +56,10 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
     }
   }
 
-  const handleUpdateViewingTask = (updatedTask: ITaskPopulated) => {
-    onUpdate(updatedTask)
-    setViewingTask(updatedTask)
-  }
+  // const handleUpdateViewingTask = (updatedTask: ITaskPopulated) => {
+  //   onUpdate(updatedTask)
+  //   setViewingTask(updatedTask)
+  // }
 
   if (tasks.length === 0) {
     return (
