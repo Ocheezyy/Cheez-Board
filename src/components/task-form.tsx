@@ -13,11 +13,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { ITask } from "@/db/models";
+import { ITask, ITaskPopulated } from "@/db/models";
 import { useUserStore } from "@/stores/useUserStore";
 
 interface TaskFormProps {
-  onSubmit: (taskData:  Omit<ITask, "id"|"comments"|"files"|"createdAt"|"updatedAt">) => void;
+  onSubmit: (taskData:  Omit<ITaskPopulated, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => void;
 }
 
 const initialTask: Partial<ITask> = {

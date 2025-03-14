@@ -3,7 +3,6 @@ import { CalendarDays, CheckCircle, Users } from "lucide-react"
 export function TaskHeader() {
   return (
     <div className="space-y-2">
-      <h1 className="text-3xl font-bold tracking-tight">Cheez Board</h1>
       <p className="text-muted-foreground">Collaborate and manage tasks with your team</p>
       <div className="mt-4 flex flex-wrap gap-4">
         <div className="flex items-center gap-2">

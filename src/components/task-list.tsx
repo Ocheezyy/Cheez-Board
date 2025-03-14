@@ -44,7 +44,7 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
     setIsViewDialogOpen(true)
   }
 
-  const handleUpdateTask = (updatedTaskData: Omit<ITaskPopulated, "id" | "createdAt">) => {
+  const handleUpdateTask = (updatedTaskData: Omit<ITaskPopulated, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
     if (editingTask) {
       const updatedTask = {
         ...editingTask,
@@ -176,11 +176,13 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
 
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
           <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>{viewingTask?.title}</DialogTitle>
+            </DialogHeader>
             {viewingTask && (
                 <TaskDetailView
                     task={viewingTask}
                     onClose={() => setIsViewDialogOpen(false)}
-                    onUpdate={handleUpdateViewingTask}
                 />
             )}
           </DialogContent>
