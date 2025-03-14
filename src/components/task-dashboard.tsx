@@ -20,7 +20,7 @@ export function TaskDashboard() {
   const { mutate: createTask } = useCreateTask();
   const { mutate: deleteTask } = useDeleteTask();
   const { mutate: updateTask } = useUpdateTask();
-  const [filter, setFilter] = useState({
+  const [ filter, setFilter ] = useState({
     status: "all",
     priority: "all",
     assignee: "all",
@@ -28,11 +28,11 @@ export function TaskDashboard() {
 
   useEffect(() => {
     toast("Failed to get tasks")
-  }, [getTaskError]);
+  }, [ getTaskError ]);
 
   useEffect(() => {
     toast("Failed to get users")
-  }, [getUserError]);
+  }, [ getUserError ]);
 
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
@@ -42,7 +42,7 @@ export function TaskDashboard() {
           (filter.assignee === "all" || task.userId.toString() === filter.assignee)
       )
     });
-  }, [filter, tasks]);
+  }, [ filter, tasks ]);
 
   const handleCreateTask = (taskData: Omit<ITask, "id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
     createTask({

@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import { ITaskPopulated } from "@/db/models";
 
 
@@ -12,7 +12,7 @@ type TaskStore = {
 
 export const useTaskStore = create<TaskStore>((set) => ({
     tasks: [],
-    addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
+    addTask: (task) => set((state) => ({ tasks: [ ...state.tasks, task ] })),
     updateTask: (id, updatedTask) =>
         set((state) => ({
             tasks: state.tasks.map((task) =>

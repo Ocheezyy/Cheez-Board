@@ -1,6 +1,6 @@
 import { useState, ChangeEvent } from "react"
 import { format } from "date-fns"
-import { Calendar, Download, FileText, Paperclip, Send, X } from 'lucide-react'
+import { Calendar, Download, FileText, Paperclip, Send, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -24,9 +24,9 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
     const users = useUserStore((state) => state.users);
     const { mutate: createComment } = useCreateComment();
     const { mutate: createFile } = useCreateFile();
-    const [newComment, setNewComment] = useState("")
-    const [newAttachment, setNewAttachment] = useState<File | null>(null)
-    const [attachmentName, setAttachmentName] = useState("")
+    const [ newComment, setNewComment ] = useState("")
+    const [ newAttachment, setNewAttachment ] = useState<File | null>(null)
+    const [ attachmentName, setAttachmentName ] = useState("")
 
     const assignee = users.find((user) => user._id === task.userId.toString())
     const dueDate = task.dueDate

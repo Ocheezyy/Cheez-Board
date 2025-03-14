@@ -30,12 +30,12 @@ const initialTask: Partial<ITask> = {
 
 export function TaskForm({ onSubmit }: TaskFormProps) {
   const users = useUserStore((state) => state.users);
-  const [title, setTitle] = useState<string>(initialTask?.title || "")
-  const [description, setDescription] = useState<string>(initialTask?.description || "")
-  const [status, setStatus] = useState<string>(initialTask?.status || "todo")
-  const [priority, setPriority] = useState<string>(initialTask?.priority || "medium")
-  const [assigneeId, setAssigneeId] = useState<string>(initialTask?.userId?.toString() || "1")
-  const [dueDate, setDueDate] = useState<Date>(
+  const [ title, setTitle ] = useState<string>(initialTask?.title || "")
+  const [ description, setDescription ] = useState<string>(initialTask?.description || "")
+  const [ status, setStatus ] = useState<string>(initialTask?.status || "todo")
+  const [ priority, setPriority ] = useState<string>(initialTask?.priority || "medium")
+  const [ assigneeId, setAssigneeId ] = useState<string>(initialTask?.userId?.toString() || "1")
+  const [ dueDate, setDueDate ] = useState<Date>(
     initialTask?.dueDate ? new Date(initialTask.dueDate) : new Date(),
   )
 

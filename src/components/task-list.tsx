@@ -23,10 +23,10 @@ interface TaskListProps {
 }
 
 export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
-  const [editingTask, setEditingTask] = useState<ITaskPopulated | null>(null)
-  const [viewingTask, setViewingTask] = useState<ITaskPopulated | null>(null)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isViewDialogOpen, setIsViewDialogOpen] = useState(false)
+  const [ editingTask, setEditingTask ] = useState<ITaskPopulated | null>(null)
+  const [ viewingTask, setViewingTask ] = useState<ITaskPopulated | null>(null)
+  const [ isEditDialogOpen, setIsEditDialogOpen ] = useState(false)
+  const [ isViewDialogOpen, setIsViewDialogOpen ] = useState(false)
 
   console.log(tasks);
 

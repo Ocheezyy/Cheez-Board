@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint-fix": "eslint --fix",
     "db-seed": "npx tsx src/db/seed.ts"
   },
   "dependencies": {

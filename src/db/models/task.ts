@@ -1,4 +1,4 @@
-import {Schema, model, models} from 'mongoose';
+import {Schema, model, models} from "mongoose";
 import { IComment } from "./comment";
 import { IFile } from "./file";
 
@@ -33,14 +33,14 @@ export interface ITaskPopulated {
 const taskSchema = new Schema<ITask>({
     title: { type: String, required: true },
     description: { type: String },
-    status: { type: String, required: true, enum: ['todo', 'in_progress', 'done'] },
-    priority: { type: String, required: true, enum: ['low', 'medium', 'high'] },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    comments: [{ type: Schema.Types.ObjectId, ref: 'Comment' }], // Nested comments
-    files: [{ type: Schema.Types.ObjectId, ref: 'File' }], // Nested files
+    status: { type: String, required: true, enum: [ "todo", "in_progress", "done" ] },
+    priority: { type: String, required: true, enum: [ "low", "medium", "high" ] },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    comments: [ { type: Schema.Types.ObjectId, ref: "Comment" } ], // Nested comments
+    files: [ { type: Schema.Types.ObjectId, ref: "File" } ], // Nested files
     dueDate: { type: Date, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
 
-export const Task = models.Task || model('Task', taskSchema);
+export const Task = models.Task || model("Task", taskSchema);

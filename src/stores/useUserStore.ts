@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 import { IUser } from "@/db/models";
 
 
@@ -12,7 +12,7 @@ type UserStore = {
 
 export const useUserStore = create<UserStore>((set) => ({
     users: [],
-    addUser: (user) => set((state) => ({ users: [...state.users, user] })),
+    addUser: (user) => set((state) => ({ users: [ ...state.users, user ] })),
     updateUser: (id, updatedUser) =>
         set((state) => ({
             users: state.users.map((user) =>

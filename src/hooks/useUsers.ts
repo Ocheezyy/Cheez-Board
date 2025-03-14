@@ -1,13 +1,13 @@
-import { useQuery } from '@tanstack/react-query';
-import { useUserStore } from '@/stores/useUserStore';
+import { useQuery } from "@tanstack/react-query";
+import { useUserStore } from "@/stores/useUserStore";
 import {useEffect} from "react";
 
 export function useUsers() {
     const { data, isLoading, error, isSuccess } =  useQuery({
-        queryKey: ['users'],
+        queryKey: [ "users" ],
         queryFn: async () => {
-            const response = await fetch('/api/users');
-            if (!response.ok) throw new Error('Failed to fetch users');
+            const response = await fetch("/api/users");
+            if (!response.ok) throw new Error("Failed to fetch users");
             return response.json();
         }
     });
@@ -18,7 +18,7 @@ export function useUsers() {
         if (data) {
             setUsers(data);
         }
-    }, [data, setUsers]);
+    }, [ data, setUsers ]);
 
     return { data, isLoading, error, isSuccess };
 }

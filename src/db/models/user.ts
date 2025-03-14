@@ -1,5 +1,5 @@
-import {Schema, model, models} from 'mongoose';
-import bcrypt from 'bcrypt';
+import {Schema, model, models} from "mongoose";
+import bcrypt from "bcrypt";
 
 export interface IUser {
     _id: string;
@@ -18,12 +18,12 @@ const userSchema = new Schema<IUser>({
 
 
 // Hash the password before saving the user
-userSchema.pre('save', async function (next) {
-    if (this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();
 });
 
 
-export const User = models.User || model('User', userSchema);
+export const User = models.User || model("User", userSchema);

@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useTaskStore } from '@/stores/useTaskStore';
-import { IFile } from '@/db/models';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTaskStore } from "@/stores/useTaskStore";
+import { IFile } from "@/db/models";
 
 interface IFileUpdateSuccess {
     file: IFile;
@@ -16,18 +16,18 @@ export function useCreateFile() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (newFile: { url: string; key: string; name: string; size: number; userId: string; taskId: string }) => {
-            const response = await fetch('/api/files', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+            const response = await fetch("/api/files", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(newFile),
             });
-            if (!response.ok) throw new Error('Failed to create file');
+            if (!response.ok) throw new Error("Failed to create file");
             return response.json() as Promise<IFile>;
         },
         onSuccess: (data, variables) => {
-            queryClient.invalidateQueries({ queryKey: ['tasks'] });
+            queryClient.invalidateQueries({ queryKey: [ "tasks" ] });
             useTaskStore.getState().updateTask(variables.taskId, {
-                files: [...(useTaskStore.getState().tasks.find((t) => t._id === variables.taskId)?.files || []), data],
+                files: [ ...(useTaskStore.getState().tasks.find((t) => t._id === variables.taskId)?.files || []), data ],
             });
         },
     });
@@ -37,16 +37,16 @@ export function useUpdateFile() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async ({ id, ...updatedFile }: { id: string; [key: string]: any }) => {
-            const response = await fetch(`/api/files`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+            const response = await fetch("/api/files", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, ...updatedFile }),
             });
-            if (!response.ok) throw new Error('Failed to update file');
+            if (!response.ok) throw new Error("Failed to update file");
             return response.json() as Promise<IFileUpdateSuccess>;
         },
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ['tasks'] });
+            queryClient.invalidateQueries({ queryKey: [ "tasks" ] });
             useTaskStore.getState().updateTask(data.taskId, {
                 files: useTaskStore.getState().tasks
                     .find((t) => t._id === data.taskId)
@@ -60,16 +60,16 @@ export function useDeleteFile() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (id: string) => {
-            const response = await fetch(`/api/files`, {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
+            const response = await fetch("/api/files", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id }),
             });
-            if (!response.ok) throw new Error('Failed to delete file');
+            if (!response.ok) throw new Error("Failed to delete file");
             return response.json() as Promise<IFileDeleteSuccess>;
         },
         onSuccess: (data, fileId) => {
-            queryClient.invalidateQueries({ queryKey: ['tasks'] });
+            queryClient.invalidateQueries({ queryKey: [ "tasks" ] });
             useTaskStore.getState().updateTask(data.taskId, {
                 files: useTaskStore.getState().tasks
                     .find((t) => t._id === data.taskId)

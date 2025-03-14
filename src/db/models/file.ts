@@ -1,4 +1,4 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models } from "mongoose";
 
 export interface IFile {
     _id: string;
@@ -15,8 +15,8 @@ const fileSchema = new Schema<IFile>({
     key: { type: String, required: true },
     name: { type: String, required: true },
     size: { type: Number, required: true },
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
     createdAt: { type: Date, default: Date.now },
 });
 
-export const File = models.File || model('File', fileSchema);
+export const File = models.File || model("File", fileSchema);

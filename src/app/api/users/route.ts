@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { User } from '@/db/models/user';
+import { NextResponse } from "next/server";
+import { User } from "@/db/models/user";
 import { connectToDatabase } from "@/db/connect";
 
 await connectToDatabase();
@@ -11,7 +11,7 @@ export async function GET() {
         return NextResponse.json(users);
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: 'Failed to fetch users' }, { status: 500 });
+        return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
     }
 }
 
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         return NextResponse.json(user, { status: 201 });
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: 'Failed to create user' }, { status: 500 });
+        return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
     }
 }
 
@@ -33,12 +33,12 @@ export async function PUT(request: Request) {
         const { id, ...updateData } = await request.json();
         const user = await User.findByIdAndUpdate(id, updateData, { new: true });
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
         return NextResponse.json(user);
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: 'Failed to update user' }, { status: 500 });
+        return NextResponse.json({ error: "Failed to update user" }, { status: 500 });
     }
 }
 
@@ -48,11 +48,11 @@ export async function DELETE(request: Request) {
         const { id } = await request.json();
         const user = await User.findByIdAndDelete(id);
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
         }
-        return NextResponse.json({ message: 'User deleted' });
+        return NextResponse.json({ message: "User deleted" });
     } catch (error) {
         console.log(error);
-        return NextResponse.json({ error: 'Failed to delete user' }, { status: 500 });
+        return NextResponse.json({ error: "Failed to delete user" }, { status: 500 });
     }
 }
