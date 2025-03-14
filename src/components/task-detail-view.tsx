@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, ChangeEvent } from "react"
+import { useState } from "react"
 import { format } from "date-fns"
-import { Calendar, Download, FileText, Paperclip, Send, X } from "lucide-react"
+import { Calendar, Download, FileText, Send, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -14,8 +14,8 @@ import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-me
 import { ITaskPopulated } from "@/db/models";
 import { useUserStore } from "@/stores/useUserStore";
 import { useCreateComment } from "@/hooks/useComments";
-import { useCreateFile } from "@/hooks/useFiles";
-import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
+// import { useCreateFile } from "@/hooks/useFiles";
+import { UploadButton } from "@/lib/uploadthing";
 import { toast } from "sonner"
 
 interface TaskDetailViewProps {
@@ -26,10 +26,10 @@ interface TaskDetailViewProps {
 export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
     const users = useUserStore((state) => state.users);
     const { mutate: createComment } = useCreateComment();
-    const { mutate: createFile } = useCreateFile();
+    // const { mutate: createFile } = useCreateFile();
     const [ newComment, setNewComment ] = useState("")
-    const [ newAttachment, setNewAttachment ] = useState<File | null>(null)
-    const [ attachmentName, setAttachmentName ] = useState("")
+    // const [ newAttachment, setNewAttachment ] = useState<File | null>(null)
+    // const [ attachmentName, setAttachmentName ] = useState("")
 
     const assignee = users.find((user) => user._id === task.userId.toString())
     const dueDate = task.dueDate
@@ -42,28 +42,28 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
         setNewComment("")
     }
 
-    const handleAddAttachment = () => {
-        if (!newAttachment || !attachmentName.trim()) return
+    // const handleAddAttachment = () => {
+    //     if (!newAttachment || !attachmentName.trim()) return
 
-        createFile({
-            url: URL.createObjectURL(newAttachment),
-            key: "key-here",
-            name: attachmentName || newAttachment.name,
-            size: newAttachment.size,
-            userId: users[0]._id,
-            taskId: task._id,
-        })
+    //     createFile({
+    //         url: URL.createObjectURL(newAttachment),
+    //         key: "key-here",
+    //         name: attachmentName || newAttachment.name,
+    //         size: newAttachment.size,
+    //         userId: users[0]._id,
+    //         taskId: task._id,
+    //     })
 
-        setNewAttachment(null)
-        setAttachmentName("")
-    }
+    //     setNewAttachment(null)
+    //     setAttachmentName("")
+    // }
 
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setNewAttachment(e.target.files[0])
-            setAttachmentName(e.target.files[0].name)
-        }
-    }
+    // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    //     if (e.target.files && e.target.files[0]) {
+    //         setNewAttachment(e.target.files[0])
+    //         setAttachmentName(e.target.files[0].name)
+    //     }
+    // }
 
     const formatFileSize = (bytes: number) => {
         if (bytes < 1024) return `${bytes} B`
