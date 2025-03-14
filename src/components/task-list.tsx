@@ -77,9 +77,9 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
         {tasks.map((task) => {
           const assignee = getUser(task.userId.toString())
           const dueDate = task.dueDate || null
-          const isOverdue = false // (new Date(dueDate) && dueDate < new Date().) && task.status !== "completed"
-          const hasAttachments = true // task.attachments && task.attachments.length > 0
-          const hasComments = true // task.comments && task.comments.length > 0
+          const isOverdue = dueDate ? (dueDate < new Date()) && task.status !== "done" : false
+          const hasFiles = task.files && task.files.length > 0
+          const hasComments = task.comments && task.comments.length > 0
 
           return (
               <Card
@@ -156,8 +156,8 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
                     )}
                   </div>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    {hasAttachments && <span>{0} attachment(s)</span>} {/* Attachment count */}
-                    {hasComments && <span>{0} comment(s)</span>} {/* comment count */}
+                    {hasFiles && <span>{task.files.length} attachment(s)</span>}
+                    {hasComments && <span>{task.comments.length} comment(s)</span>}
                   </div>
                 </CardFooter>
               </Card>

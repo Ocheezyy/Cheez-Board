@@ -5,7 +5,6 @@ import { Task } from "@/db/models";
 
 await connectToDatabase();
 
-// GET all comments
 export async function GET() {
     try {
         const comments = await Comment.find();
@@ -16,7 +15,6 @@ export async function GET() {
     }
 }
 
-// POST a new comment
 export async function POST(request: Request) {
     try {
         const { content, userId, taskId } = await request.json();
@@ -28,7 +26,6 @@ export async function POST(request: Request) {
     }
 }
 
-// PUT (update) a comment
 export async function PUT(request: Request) {
     try {
         const { id, ...updateData } = await request.json();
@@ -44,7 +41,6 @@ export async function PUT(request: Request) {
     }
 }
 
-// DELETE a comment
 export async function DELETE(request: Request) {
     try {
         const { id } = await request.json();

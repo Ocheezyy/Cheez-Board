@@ -1,3 +1,5 @@
+"use client"
+
 import { useState, ChangeEvent } from "react"
 import { format } from "date-fns"
 import { Calendar, Download, FileText, Paperclip, Send, X } from "lucide-react"
@@ -5,7 +7,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,6 +15,8 @@ import { ITaskPopulated } from "@/db/models";
 import { useUserStore } from "@/stores/useUserStore";
 import { useCreateComment } from "@/hooks/useComments";
 import { useCreateFile } from "@/hooks/useFiles";
+import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
+import { toast } from "sonner"
 
 interface TaskDetailViewProps {
     task: ITaskPopulated
@@ -127,34 +130,17 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-medium">Attachments</h3>
                     <div className="flex items-center gap-2">
-                        <Input
-                            type="text"
-                            placeholder="File name"
-                            value={attachmentName}
-                            onChange={(e) => setAttachmentName(e.target.value)}
-                            className="w-[200px]"
+                        <UploadButton
+                            endpoint="imageUploader"
+                            onClientUploadComplete={(res) => {
+                                console.log("Files: ", res);
+                                toast("File uploaded!");
+                            }}
+                            onUploadError={(error: Error) => {
+                                console.error(error);
+                                toast("Failed to upload file");
+                            }}
                         />
-                        <Input
-                            type="file"
-                            id="file-upload"
-                            className="hidden"
-                            onChange={handleFileChange}
-                        />
-                        <Label htmlFor="file-upload" className="cursor-pointer">
-                            <Button variant="outline" size="sm" type="button" asChild>
-                <span>
-                  <Paperclip className="mr-2 h-4 w-4" />
-                  Browse
-                </span>
-                            </Button>
-                        </Label>
-                        <Button
-                            size="sm"
-                            onClick={handleAddAttachment}
-                            disabled={!newAttachment}
-                        >
-                            Add
-                        </Button>
                     </div>
                 </div>
 
@@ -170,13 +156,13 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                                             {formatFileSize(attachment.size)} • {format(new Date(attachment.createdAt), "MMM d, yyyy")}
                                         </p>
                                     </div>
+                                    <Button variant="ghost" size="icon" className="ml-2" asChild>
+                                        <a href={attachment.url} download={attachment.name}>
+                                            <Download className="h-4 w-4" />
+                                            <span className="sr-only">Download</span>
+                                        </a>
+                                    </Button>
                                 </div>
-                                <Button variant="ghost" size="icon" asChild>
-                                    <a href={attachment.url} download={attachment.name}>
-                                        <Download className="h-4 w-4" />
-                                        <span className="sr-only">Download</span>
-                                    </a>
-                                </Button>
                             </Card>
                         ))}
                     </div>

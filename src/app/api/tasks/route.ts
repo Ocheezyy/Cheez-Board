@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { Task } from "@/db/models/task";
+import { Task } from "@/db/models";
 import { connectToDatabase } from "@/db/connect";
 
 await connectToDatabase();
 
-// GET all tasks
 export async function GET() {
     try {
         const tasks = await Task.find().populate("comments").populate("files");
@@ -15,7 +14,6 @@ export async function GET() {
     }
 }
 
-// POST a new task
 export async function POST(request: Request) {
     try {
         const { title, description, status, userId } = await request.json();
@@ -27,7 +25,6 @@ export async function POST(request: Request) {
     }
 }
 
-// PUT (update) a task
 export async function PUT(request: Request) {
     try {
         const { id, ...updateData } = await request.json();
@@ -42,7 +39,6 @@ export async function PUT(request: Request) {
     }
 }
 
-// DELETE a task
 export async function DELETE(request: Request) {
     try {
         const { id } = await request.json();
