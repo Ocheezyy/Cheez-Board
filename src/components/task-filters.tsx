@@ -6,32 +6,16 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { IUser } from "@/db/models";
-
-interface SetFilterArgs {
-  status: string;
-  priority: string;
-  assignee: string;
-}
+import { TaskFilter, FilterCounts, TaskStatus, TaskPriority } from "@/lib/types"
 
 interface TaskFiltersProps {
-  filter: {
-    status: string
-    priority: string
-    assignee: string
-  }
-  setFilter: (filter: SetFilterArgs) => void
-  users: IUser[]
+  filter: TaskFilter;
+  setFilter: (filter: TaskFilter) => void;
+  users: IUser[];
+  counts: FilterCounts
 }
 
-export function TaskFilters({ filter, setFilter, users }: TaskFiltersProps) {
-  console.log(users);
-  const taskCount = {
-    all: 0,
-    todo: 0,
-    "in-progress": 0,
-    completed: 0,
-  }
-
+export function TaskFilters({ filter, setFilter, users, counts }: TaskFiltersProps) {
   return (
     <Card>
       <CardHeader>
@@ -42,7 +26,7 @@ export function TaskFilters({ filter, setFilter, users }: TaskFiltersProps) {
           <Label>Status</Label>
           <RadioGroup
             defaultValue={filter.status}
-            onValueChange={(value) => setFilter({ ...filter, status: value })}
+            onValueChange={(value) => setFilter({ ...filter, status: value as TaskStatus })}
             className="flex flex-col space-y-1"
           >
             <div className="flex items-center space-x-2">
@@ -50,35 +34,35 @@ export function TaskFilters({ filter, setFilter, users }: TaskFiltersProps) {
               <Label htmlFor="status-all" className="flex-1 cursor-pointer">
                 All
               </Label>
-              <Badge variant="outline">{taskCount.all}</Badge>
+              <Badge variant="outline">{counts.all}</Badge>
             </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="todo" id="status-todo" />
               <Label htmlFor="status-todo" className="flex-1 cursor-pointer">
                 To Do
               </Label>
-              <Badge variant="outline">{taskCount.todo}</Badge>
+              <Badge variant="outline">{counts.todo}</Badge>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="in-progress" id="status-in-progress" />
+              <RadioGroupItem value="in_progress" id="status-in-progress" />
               <Label htmlFor="status-in-progress" className="flex-1 cursor-pointer">
                 In Progress
               </Label>
-              <Badge variant="outline">{taskCount["in-progress"]}</Badge>
+              <Badge variant="outline">{counts.inProgress}</Badge>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="completed" id="status-completed" />
+              <RadioGroupItem value="done" id="status-completed" />
               <Label htmlFor="status-completed" className="flex-1 cursor-pointer">
                 Completed
               </Label>
-              <Badge variant="outline">{taskCount.completed}</Badge>
+              <Badge variant="outline">{counts.completed}</Badge>
             </div>
           </RadioGroup>
         </div>
 
         <div className="space-y-2">
           <Label>Priority</Label>
-          <Select value={filter.priority} onValueChange={(value) => setFilter({ ...filter, priority: value })}>
+          <Select value={filter.priority} onValueChange={(value) => setFilter({ ...filter, priority: value as TaskPriority })}>
             <SelectTrigger>
               <SelectValue placeholder="Select priority" />
             </SelectTrigger>

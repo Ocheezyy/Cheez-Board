@@ -175,8 +175,8 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
         </Dialog>
 
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
-          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
+          <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto [&>button]:hidden">
+            <DialogHeader className="hidden">
               <DialogTitle>{viewingTask?.title}</DialogTitle>
             </DialogHeader>
             {viewingTask && (
