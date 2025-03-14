@@ -36,11 +36,11 @@ export function useCreateFile() {
 export function useUpdateFile() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, ...updatedFile }: { id: string; [key: string]: any }) => {
+        mutationFn: async ({ _id, ...updatedFile }: Partial<IFile>) => {
             const response = await fetch("/api/files", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, ...updatedFile }),
+                body: JSON.stringify({ _id, ...updatedFile }),
             });
             if (!response.ok) throw new Error("Failed to update file");
             return response.json() as Promise<IFileUpdateSuccess>;

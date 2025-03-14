@@ -37,11 +37,11 @@ export function useCreateComment() {
 export function useUpdateComment() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ id, ...updatedComment }: { id: string; [key: string]: any }) => {
+        mutationFn: async ({ _id, ...updatedComment }: Partial<IComment>) => {
             const response = await fetch("/api/comments", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id, ...updatedComment }),
+                body: JSON.stringify({ _id, ...updatedComment }),
             });
             if (!response.ok) throw new Error("Failed to update comment");
             return response.json() as Promise<ICommentUpdateSuccess>;

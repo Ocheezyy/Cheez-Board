@@ -7,13 +7,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { IUser } from "@/db/models";
 
+interface SetFilterArgs {
+  status: string;
+  priority: string;
+  assignee: string;
+}
+
 interface TaskFiltersProps {
   filter: {
     status: string
     priority: string
     assignee: string
   }
-  setFilter: (filter: any) => void
+  setFilter: (filter: SetFilterArgs) => void
   users: IUser[]
 }
 

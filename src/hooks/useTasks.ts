@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useTaskStore } from "@/stores/useTaskStore";
+import { ITaskPopulated } from "@/db/models";
 
 export function useTasks() {
     const { data, isLoading, error, isSuccess }  = useQuery({
@@ -46,7 +47,7 @@ export function useCreateTask() {
 export function useUpdateTask() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async ({ _id, ...updatedTask }: { _id: string; [key: string]: any }) => {
+        mutationFn: async ({ _id, ...updatedTask }: Partial<ITaskPopulated>) => {
             const response = await fetch("/api/tasks", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
