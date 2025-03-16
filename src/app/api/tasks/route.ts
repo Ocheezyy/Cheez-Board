@@ -9,7 +9,7 @@ export async function GET() {
         const tasks = await Task.find().populate("comments").populate("files");
         return NextResponse.json(tasks);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to fetch tasks" }, { status: 500 });
     }
 }
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         const task = await Task.create({ title, description, status, userId });
         return NextResponse.json(task, { status: 201 });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to create task" }, { status: 500 });
     }
 }
@@ -34,7 +34,7 @@ export async function PUT(request: Request) {
         }
         return NextResponse.json(task);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to update task" }, { status: 500 });
     }
 }
@@ -48,7 +48,7 @@ export async function DELETE(request: Request) {
         }
         return NextResponse.json({ message: "Task deleted" });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to delete task" }, { status: 500 });
     }
 }

@@ -17,7 +17,6 @@ export function useTasks() {
 
     useEffect(() => {
         if (data) {
-            console.log(data);
             setTasks(data);
         }
     }, [ data, setTasks ]);

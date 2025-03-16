@@ -1,21 +1,24 @@
 "use client"
 
-import {useEffect, useMemo, useState} from "react";
+import { useCreateTask, useDeleteTask, useTasks, useUpdateTask } from "@/hooks/useTasks";
+import { useEffect, useMemo, useState } from "react";
+import { useTaskStore } from "@/stores/useTaskStore";
+import { useUserStore } from "@/stores/useUserStore";
+import { useUsers } from "@/hooks/useUsers";
+import { useUser } from "@clerk/nextjs";
+
 import { TaskList } from "./task-list";
 import { TaskForm } from "./task-form";
 import { TaskHeader } from "./task-header";
 import { TaskFilters } from "./task-filters";
-import { useCreateTask, useDeleteTask, useTasks, useUpdateTask } from "@/hooks/useTasks";
-import { useTaskStore } from "@/stores/useTaskStore";
-import { useUserStore } from "@/stores/useUserStore";
-import { useUsers } from "@/hooks/useUsers";
-import { ITask } from "@/db/models";
 import { toast } from "sonner";
-import { TaskFilter } from "@/lib/types";
 
+import type { ITask } from "@/db/models";
+import type { TaskFilter } from "@/lib/types";
 
 
 export function TaskDashboard() {
+  const { isSignedIn, user: authUser } = useUser();
   const { error: getTaskError } = useTasks();
   const { error: getUserError } = useUsers();
   const tasks = useTaskStore((state) => state.tasks);
@@ -48,12 +51,17 @@ export function TaskDashboard() {
   }, [ filter, tasks ]);
 
   const handleCreateTask = (taskData: Omit<ITask, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
+    if (!isSignedIn || !authUser) {
+      toast("You must be signed in to create a task!");
+      return;
+    }
+
     createTask({
       title: taskData.title,
       description: taskData.description || "",
       priority: taskData.priority,
       status: taskData.status,
-      userId: users[0]._id
+      userId: authUser.id
     })
   }
 

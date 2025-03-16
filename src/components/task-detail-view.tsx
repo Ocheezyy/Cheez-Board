@@ -1,22 +1,26 @@
 "use client"
 
-import { useState } from "react"
-import { format } from "date-fns"
-import { Calendar, Download, FileText, Send, X } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
-import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-methods";
-import { ITaskPopulated } from "@/db/models";
+import { useState } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { useCreateComment } from "@/hooks/useComments";
 // import { useCreateFile } from "@/hooks/useFiles";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, Download, FileText, Send, X } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/lib/uploadthing";
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+
+import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-methods";
+import { format } from "date-fns";
+import { toast } from "sonner";
+
+import type { ITaskPopulated } from "@/db/models";
+
 
 interface TaskDetailViewProps {
     task: ITaskPopulated
@@ -27,18 +31,18 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
     const users = useUserStore((state) => state.users);
     const { mutate: createComment } = useCreateComment();
     // const { mutate: createFile } = useCreateFile();
-    const [ newComment, setNewComment ] = useState("")
+    const [ newComment, setNewComment ] = useState("");
     // const [ newAttachment, setNewAttachment ] = useState<File | null>(null)
     // const [ attachmentName, setAttachmentName ] = useState("")
 
-    const assignee = users.find((user) => user._id === task.userId.toString())
-    const dueDate = task.dueDate
-    const isOverdue = dueDate < new Date() && task.status !== "done"
+    const assignee = users.find((user) => user.id === task.userId);
+    const dueDate = task.dueDate;
+    const isOverdue = dueDate < new Date() && task.status !== "done";
 
     const handleAddComment = () => {
         if (!newComment.trim()) return;
 
-        createComment({ content: newComment, userId: users[0]._id, taskId: task._id })
+        createComment({ content: newComment, userId: users[0].id, taskId: task._id })
         setNewComment("")
     }
 
@@ -111,12 +115,12 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                 {assignee ? (
                     <div className="flex items-center gap-2">
                         <Avatar>
-                            <AvatarImage src={""} alt={assignee.name} />
-                            <AvatarFallback>{assignee.name.charAt(0)}</AvatarFallback>
+                            <AvatarImage src={""} alt={assignee.username} />
+                            <AvatarFallback>{assignee.username.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className="font-medium">{assignee.name}</p>
-                            <p className="text-sm text-muted-foreground">{assignee.email}</p>
+                            <p className="font-medium">{assignee.username}</p>
+                            <p className="text-sm text-muted-foreground">{assignee.emailAddresses.find((emailAddress) => emailAddress.id === assignee.primaryEmailAddressId)?.emailAddress || ""}</p>
                         </div>
                     </div>
                 ) : (
@@ -192,16 +196,16 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                 {task.comments && task.comments.length > 0 ? (
                     <div className="space-y-4">
                         {task.comments.map((comment) => {
-                            const commentUser = users.find((user) => user._id === comment.userId)
+                            const commentUser = users.find((user) => user.id === comment.userId)
                             return (
                                 <div key={comment._id} className="flex gap-3">
                                     <Avatar className="h-8 w-8">
-                                        <AvatarImage src={""} alt={commentUser?.name || "User"} />
-                                        <AvatarFallback>{commentUser?.name.charAt(0) || "U"}</AvatarFallback>
+                                        <AvatarImage src={""} alt={commentUser?.username || "User"} />
+                                        <AvatarFallback>{commentUser?.username.charAt(0) || "U"}</AvatarFallback>
                                     </Avatar>
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-2">
-                                            <span className="font-medium">{commentUser?.name || "Unknown User"}</span>
+                                            <span className="font-medium">{commentUser?.username || "Unknown User"}</span>
                                             <span className="text-xs text-muted-foreground">
                         {format(new Date(comment.createdAt), "MMM d, yyyy 'at' h:mm a")}
                       </span>

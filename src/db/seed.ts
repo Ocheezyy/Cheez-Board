@@ -1,6 +1,8 @@
 import "dotenv/config";
 import mongoose from "mongoose";
-import { File, Comment, Task, User } from "@/db/models";
+import { File, Comment, Task } from "@/db/models";
+
+const defaultUserId: string = "user_2uNjnvCD0RFqKDV405AZQfOzZ8f";
 
 async function seed() {
   // Connect to MongoDB
@@ -9,30 +11,10 @@ async function seed() {
   console.log("Connected to MongoDB");
 
   // Clear existing data
-  await User.deleteMany({});
   await Task.deleteMany({});
   await Comment.deleteMany({});
   await File.deleteMany({});
   console.log("Cleared existing data");
-
-  // Seed Users
-  const user1 = await User.create({
-    name: "Gouda Guy",
-    email: "gouda.guy@cheeseboard.com",
-    password: "hashed_password_1",
-  });
-
-  const user2 = await User.create({
-    name: "Brie Boss",
-    email: "brie.boss@cheeseboard.com",
-    password: "hashed_password_2",
-  });
-
-  const user3 = await User.create({
-    name: "Cheddar Chief",
-    email: "cheddar.chief@cheeseboard.com",
-    password: "hashed_password_3",
-  });
 
   console.log("Seeded users");
 
@@ -42,7 +24,7 @@ async function seed() {
     description: "Organize a cheese tasting event with at least 5 varieties.",
     priority: "high",
     status: "todo",
-    userId: user1._id,
+    userId: defaultUserId,
     dueDate: new Date(2026, 10, 20)
   });
 
@@ -51,7 +33,7 @@ async function seed() {
     description: "Purchase 3 wheels of Brie from the local cheesemonger.",
     priority: "low",
     status: "in_progress",
-    userId: user2._id,
+    userId: defaultUserId,
     dueDate: new Date(2025, 7, 1)
   });
 
@@ -60,7 +42,7 @@ async function seed() {
     description: "Design a visually appealing cheese board layout.",
     priority: "low",
     status: "done",
-    userId: user3._id,
+    userId: defaultUserId,
     dueDate: new Date(2025, 2, 11)
   });
 
@@ -69,19 +51,19 @@ async function seed() {
   // Seed Comments
   const comment1 = await Comment.create({
     content: "Should we include blue cheese?",
-    userId: user2._id,
+    userId: defaultUserId,
     taskId: task1._id,
   });
 
   const comment2 = await Comment.create({
     content: "I found a great deal on Brie at the market!",
-    userId: user3._id,
+    userId: defaultUserId,
     taskId: task2._id,
   });
 
   const comment3 = await Comment.create({
     content: "Love the layout! Maybe add some grapes?",
-    userId: user1._id,
+    userId: defaultUserId,
     taskId: task3._id,
   });
 
@@ -93,7 +75,7 @@ async function seed() {
     key: "file-key-12345",
     name: "cheese-board-design.png",
     size: 1024,
-    userId: user1._id,
+    userId: defaultUserId,
     taskId: task1._id,
   });
 
@@ -102,7 +84,7 @@ async function seed() {
     key: "file-key-67890",
     name: "wine-list.pdf",
     size: 2048,
-    userId: user2._id,
+    userId: defaultUserId,
     taskId: task2._id,
   });
 

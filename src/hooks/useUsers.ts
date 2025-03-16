@@ -16,6 +16,7 @@ export function useUsers() {
 
     useEffect(() => {
         if (data) {
+            console.log("users", data);
             setUsers(data);
         }
     }, [ data, setUsers ]);

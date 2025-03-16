@@ -13,3 +13,17 @@ export type FilterCounts = {
     todo: number;
     completed: number;
 }
+
+export type IUser = {
+    id: string;
+    username: string;
+    hasImage: string;
+    externalId: string;
+    banned: boolean;
+    image_url: string;
+    primaryEmailAddressId: string;
+    emailAddresses: {
+        id: string;
+        emailAddress: string;
+    }[]
+}

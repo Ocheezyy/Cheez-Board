@@ -15,7 +15,7 @@ const fileSchema = new Schema<IFile>({
     key: { type: String, required: true },
     name: { type: String, required: true },
     size: { type: Number, required: true },
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
 });
 

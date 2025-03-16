@@ -1,47 +1,51 @@
 "use client"
 
-import { useState } from "react"
-import { format } from "date-fns"
-import { Calendar, Edit, MoreHorizontal, Trash2 } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { TaskForm } from "./task-form"
-import { TaskDetailView } from "./task-detail-view"
+import { useState } from "react";
+
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar, Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { TaskDetailView } from "./task-detail-view";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { TaskForm } from "./task-form";
+
 import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-methods";
-import { ITaskPopulated, IUser } from "@/db/models";
+import { format } from "date-fns";
+
+import type { ITaskPopulated } from "@/db/models";
+import type { IUser } from "@/lib/types";
 
 
 interface TaskListProps {
-  tasks: ITaskPopulated[]
-  users: IUser[]
-  onUpdate: (task: Partial<ITaskPopulated>) => void
-  onDelete: (taskId: string) => void
+  tasks: ITaskPopulated[];
+  users: IUser[];
+  onUpdate: (task: Partial<ITaskPopulated>) => void;
+  onDelete: (taskId: string) => void;
 }
 
 export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
-  const [ editingTask, setEditingTask ] = useState<ITaskPopulated | null>(null)
-  const [ viewingTask, setViewingTask ] = useState<ITaskPopulated | null>(null)
-  const [ isEditDialogOpen, setIsEditDialogOpen ] = useState(false)
-  const [ isViewDialogOpen, setIsViewDialogOpen ] = useState(false)
-
-  console.log(tasks);
+  const [ editingTask, setEditingTask ] = useState<ITaskPopulated | null>(null);
+  const [ viewingTask, setViewingTask ] = useState<ITaskPopulated | null>(null);
+  const [ isEditDialogOpen, setIsEditDialogOpen ] = useState(false);
+  const [ isViewDialogOpen, setIsViewDialogOpen ] = useState(false);
 
   const getUser = (assigneeId: string) => {
-    return users.find((user) => user._id === assigneeId)
+    if (users && users.length > 0) {
+      return users.find((user) => user.id === assigneeId)
+    }
   }
 
   const handleEditTask = (task: ITaskPopulated) => {
-    setEditingTask(task)
-    setIsEditDialogOpen(true)
+    setEditingTask(task);
+    setIsEditDialogOpen(true);
   }
 
   const handleViewTask = (task: ITaskPopulated) => {
-    setViewingTask(task)
-    setIsViewDialogOpen(true)
+    setViewingTask(task);
+    setIsViewDialogOpen(true);
   }
 
   const handleUpdateTask = (updatedTaskData: Omit<ITaskPopulated, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
@@ -148,10 +152,10 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
                     {assignee && (
                         <>
                           <Avatar className="h-6 w-6">
-                            <AvatarImage src={""} alt={assignee.name} />
-                            <AvatarFallback>{assignee.name.charAt(0)}</AvatarFallback>
+                            <AvatarImage src={""} alt={assignee.username} />
+                            <AvatarFallback>{assignee.username.charAt(0)}</AvatarFallback>
                           </Avatar>
-                          <span className="text-sm text-muted-foreground">{assignee.name}</span>
+                          <span className="text-sm text-muted-foreground">{assignee.username}</span>
                         </>
                     )}
                   </div>

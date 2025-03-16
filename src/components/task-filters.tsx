@@ -1,18 +1,18 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { IUser } from "@/db/models";
-import { TaskFilter, FilterCounts, TaskStatus, TaskPriority } from "@/lib/types"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+
+import type { TaskFilter, FilterCounts, TaskStatus, TaskPriority, IUser } from "@/lib/types";
 
 interface TaskFiltersProps {
   filter: TaskFilter;
   setFilter: (filter: TaskFilter) => void;
   users: IUser[];
-  counts: FilterCounts
+  counts: FilterCounts;
 }
 
 export function TaskFilters({ filter, setFilter, users, counts }: TaskFiltersProps) {
@@ -83,9 +83,9 @@ export function TaskFilters({ filter, setFilter, users, counts }: TaskFiltersPro
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Team Members</SelectItem>
-              {users && users.map((user) => (
-                <SelectItem key={user._id} value={user._id}>
-                  {user.name}
+              {users && users.length && users.map((user) => (
+                <SelectItem key={user.id} value={user.id}>
+                  {user.username}
                 </SelectItem>
               ))}
             </SelectContent>

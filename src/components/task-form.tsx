@@ -40,7 +40,7 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
   )
 
   const handleSubmit = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     onSubmit({
       title,
@@ -49,16 +49,16 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
       priority: priority as "low" | "medium" | "high",
       userId: assigneeId,
       dueDate: dueDate,
-    })
+    });
 
     // Reset form if not editing
     if (!initialTask) {
-      setTitle("")
-      setDescription("")
-      setStatus("todo")
-      setPriority("medium")
-      setAssigneeId("")
-      setDueDate(new Date())
+      setTitle("");
+      setDescription("");
+      setStatus("todo");
+      setPriority("medium");
+      setAssigneeId("");
+      setDueDate(new Date());
     }
   }
 
@@ -128,9 +128,9 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
                 <SelectValue placeholder="Select team member" />
               </SelectTrigger>
               <SelectContent>
-                {users.map((user) => (
-                  <SelectItem key={user._id} value={user._id}>
-                    {user.name}
+                {users && users.length > 0 && users.map((user) => (
+                  <SelectItem key={user.id} value={user.id}>
+                    {user.username}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -163,6 +163,6 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
         </CardFooter>
       </form>
     </Card>
-  )
+  );
 }
 

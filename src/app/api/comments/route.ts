@@ -10,7 +10,7 @@ export async function GET() {
         const comments = await Comment.find();
         return NextResponse.json(comments);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to fetch comments" }, { status: 500 });
     }
 }
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         const comment = await Comment.create({ content, userId, taskId });
         return NextResponse.json(comment, { status: 201 });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
     }
 }
@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
         const task = await Task.findOne({ "comments._id": id });
         return NextResponse.json({ comment, taskId: task?.id });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to update comment" }, { status: 500 });
     }
 }
@@ -53,7 +53,7 @@ export async function DELETE(request: Request) {
 
         return NextResponse.json({ message: "Comment deleted", taskId: task?.id });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({ error: "Failed to delete comment" }, { status: 500 });
     }
 }

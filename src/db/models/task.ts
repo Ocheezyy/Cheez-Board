@@ -35,7 +35,7 @@ const taskSchema = new Schema<ITask>({
     description: { type: String },
     status: { type: String, required: true, enum: [ "todo", "in_progress", "done" ] },
     priority: { type: String, required: true, enum: [ "low", "medium", "high" ] },
-    userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    userId: { type: String, required: true },
     comments: [ { type: Schema.Types.ObjectId, ref: "Comment" } ], // Nested comments
     files: [ { type: Schema.Types.ObjectId, ref: "File" } ], // Nested files
     dueDate: { type: Date, required: true },
