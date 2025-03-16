@@ -6,11 +6,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { Calendar, MoreHorizontal, Trash2 } from "lucide-react";
 import { TaskDetailView } from "./task-detail-view";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TaskForm } from "./task-form";
 
 import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-methods";
 import { format } from "date-fns";
