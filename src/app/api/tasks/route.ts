@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { Task } from "@/db/models";
+import { ITask, Task } from "@/db/models";
 import { connectToDatabase } from "@/db/connect";
+import type { CreateTaskResponse } from "@/lib/types";
 
 await connectToDatabase();
 
@@ -16,9 +17,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        const { title, description, status, userId } = await request.json();
-        const task = await Task.create({ title, description, status, userId });
-        return NextResponse.json(task, { status: 201 });
+        const { title, description, status, dueDate, userId, priority }: ITask = await request.json();
+        const task = await Task.create({ title, description, status, userId, dueDate, priority });
+        return NextResponse.json<CreateTaskResponse>(task, { status: 201 });
     } catch (error) {
         console.error(error);
         return NextResponse.json({ error: "Failed to create task" }, { status: 500 });

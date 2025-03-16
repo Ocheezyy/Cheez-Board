@@ -1,6 +1,6 @@
 "use client"
 
-import { useCreateTask, useDeleteTask, useTasks, useUpdateTask } from "@/hooks/useTasks";
+import { useCreateTask, useDeleteTask, useTasks } from "@/hooks/useTasks";
 import { useEffect, useMemo, useState } from "react";
 import { useTaskStore } from "@/stores/useTaskStore";
 import { useUserStore } from "@/stores/useUserStore";
@@ -25,7 +25,6 @@ export function TaskDashboard() {
   const users = useUserStore((state) => state.users);
   const { mutate: createTask } = useCreateTask();
   const { mutate: deleteTask } = useDeleteTask();
-  const { mutate: updateTask } = useUpdateTask();
   const [ filter, setFilter ] = useState<TaskFilter>({
     status: "all",
     priority: "all",
@@ -61,7 +60,8 @@ export function TaskDashboard() {
       description: taskData.description || "",
       priority: taskData.priority,
       status: taskData.status,
-      userId: authUser.id
+      userId: authUser.id,
+      dueDate: taskData.dueDate,
     })
   }
 
@@ -83,11 +83,11 @@ export function TaskDashboard() {
           <div className="md:col-span-1">
             <TaskFilters filter={filter} setFilter={setFilter} users={users} counts={taskCounts} />
             <div className="mt-6">
-              <TaskForm onSubmit={handleCreateTask} />
+              <TaskForm onSubmit={handleCreateTask} authUser={authUser || undefined} isSignedIn={isSignedIn || false} />
             </div>
           </div>
           <div className="md:col-span-3">
-            <TaskList tasks={filteredTasks} users={users} onUpdate={updateTask} onDelete={deleteTask} />
+            <TaskList tasks={filteredTasks} users={users} onDelete={deleteTask} />
           </div>
         </div>
       </div>

@@ -22,14 +22,11 @@ import type { IUser } from "@/lib/types";
 interface TaskListProps {
   tasks: ITaskPopulated[];
   users: IUser[];
-  onUpdate: (task: Partial<ITaskPopulated>) => void;
   onDelete: (taskId: string) => void;
 }
 
-export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
-  const [ editingTask, setEditingTask ] = useState<ITaskPopulated | null>(null);
+export function TaskList({ tasks, users, onDelete }: TaskListProps) {
   const [ viewingTask, setViewingTask ] = useState<ITaskPopulated | null>(null);
-  const [ isEditDialogOpen, setIsEditDialogOpen ] = useState(false);
   const [ isViewDialogOpen, setIsViewDialogOpen ] = useState(false);
 
   const getUser = (assigneeId: string) => {
@@ -38,26 +35,9 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
     }
   }
 
-  const handleEditTask = (task: ITaskPopulated) => {
-    setEditingTask(task);
-    setIsEditDialogOpen(true);
-  }
-
   const handleViewTask = (task: ITaskPopulated) => {
     setViewingTask(task);
     setIsViewDialogOpen(true);
-  }
-
-  const handleUpdateTask = (updatedTaskData: Omit<ITaskPopulated, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => {
-    if (editingTask) {
-      const updatedTask = {
-        ...editingTask,
-        ...updatedTaskData,
-      }
-      onUpdate(updatedTask)
-      setIsEditDialogOpen(false)
-      setEditingTask(null)
-    }
   }
 
   // const handleUpdateViewingTask = (updatedTask: ITaskPopulated) => {
@@ -105,15 +85,6 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleEditTask(task)
-                            }}
-                        >
-                          <Edit className="mr-2 h-4 w-4" />
-                          Edit
-                        </DropdownMenuItem>
                         <DropdownMenuItem
                             onClick={(e) => {
                               e.stopPropagation()
@@ -167,16 +138,6 @@ export function TaskList({ tasks, users, onUpdate, onDelete }: TaskListProps) {
               </Card>
           )
         })}
-
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Edit Task</DialogTitle>
-            </DialogHeader>
-
-            {editingTask && <TaskForm onSubmit={handleUpdateTask} />}
-          </DialogContent>
-        </Dialog>
 
         <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
           <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto [&>button]:hidden">

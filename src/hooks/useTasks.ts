@@ -27,7 +27,7 @@ export function useTasks() {
 export function useCreateTask() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (newTask: { title: string; description: string; status: string; priority: string; userId: string }) => {
+        mutationFn: async (newTask: { title: string; description: string; status: string; priority: string; userId: string, dueDate: Date }) => {
             const response = await fetch("/api/tasks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },

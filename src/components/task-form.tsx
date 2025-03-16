@@ -1,23 +1,29 @@
 "use client"
 
-import type { FormEvent } from "react";
 import { useState } from "react";
-import { CalendarIcon } from "lucide-react";
-import { format } from "date-fns";
-import { Button } from "@/components/ui/button";
+
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
-import { ITask, ITaskPopulated } from "@/db/models";
+import { CalendarIcon } from "lucide-react";
+
 import { useUserStore } from "@/stores/useUserStore";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+
+import type { FormEvent } from "react";
+import type { ITask, ITaskPopulated } from "@/db/models";
+import type { UserResource } from "@clerk/types";
 
 interface TaskFormProps {
   onSubmit: (taskData:  Omit<ITaskPopulated, "_id"|"comments"|"files"|"createdAt"|"updatedAt">) => void;
+  isSignedIn: boolean;
+  authUser?: UserResource;
 }
 
 const initialTask: Partial<ITask> = {
@@ -28,16 +34,17 @@ const initialTask: Partial<ITask> = {
   dueDate: new Date()
 }
 
-export function TaskForm({ onSubmit }: TaskFormProps) {
+export function TaskForm({ onSubmit, isSignedIn, authUser }: TaskFormProps) {
+  const defaultUser = isSignedIn && authUser ? authUser.id : "";
   const users = useUserStore((state) => state.users);
-  const [ title, setTitle ] = useState<string>(initialTask?.title || "")
-  const [ description, setDescription ] = useState<string>(initialTask?.description || "")
-  const [ status, setStatus ] = useState<string>(initialTask?.status || "todo")
-  const [ priority, setPriority ] = useState<string>(initialTask?.priority || "medium")
-  const [ assigneeId, setAssigneeId ] = useState<string>(initialTask?.userId?.toString() || "1")
+  const [ title, setTitle ] = useState<string>(initialTask?.title || "");
+  const [ description, setDescription ] = useState<string>(initialTask?.description || "");
+  const [ status, setStatus ] = useState<string>(initialTask?.status || "todo");
+  const [ priority, setPriority ] = useState<string>(initialTask?.priority || "medium");
+  const [ assigneeId, setAssigneeId ] = useState<string>(defaultUser);
   const [ dueDate, setDueDate ] = useState<Date>(
     initialTask?.dueDate ? new Date(initialTask.dueDate) : new Date(),
-  )
+  );
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -57,7 +64,7 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
       setDescription("");
       setStatus("todo");
       setPriority("medium");
-      setAssigneeId("");
+      setAssigneeId(defaultUser);
       setDueDate(new Date());
     }
   }
@@ -65,7 +72,7 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">{initialTask ? "Edit Task" : "Create New Task"}</CardTitle>
+        <CardTitle className="text-lg">Create New Task</CardTitle>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
@@ -156,9 +163,9 @@ export function TaskForm({ onSubmit }: TaskFormProps) {
             </Popover>
           </div>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="pt-4">
           <Button type="submit" className="w-full">
-            {initialTask ? "Update Task" : "Create Task"}
+            Create Task
           </Button>
         </CardFooter>
       </form>

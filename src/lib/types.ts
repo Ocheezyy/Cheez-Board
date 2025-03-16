@@ -1,3 +1,5 @@
+import type { ITask } from "@/db/models";
+
 export type TaskStatus = "todo" | "in_progress" | "done" | "all";
 export type TaskPriority = "low" | "medium" | "high" | "all"
 
@@ -26,4 +28,9 @@ export type IUser = {
         id: string;
         emailAddress: string;
     }[]
+}
+
+export type CreateTaskResponse = {
+    task: ITask;
+    status: number;
 }
