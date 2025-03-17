@@ -31,7 +31,7 @@ export function Navbar() {
                             <path d="M12 12H2v10h10V12z" />
                             <path d="M22 2h-8v8h8V2z" />
                     </svg>
-                    <span className="text-lg font-bold">TaskBoard</span>
+                    <span className="text-lg font-bold">Cheez Board</span>
                 </div>
                 <div>
                     <SignedOut>
