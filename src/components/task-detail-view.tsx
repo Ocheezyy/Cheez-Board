@@ -3,10 +3,13 @@
 import { useState } from "react";
 import { useUserStore } from "@/stores/useUserStore";
 import { useCreateComment } from "@/hooks/useComments";
-// import { useCreateFile } from "@/hooks/useFiles";
+import { useCreateFile } from "@/hooks/useFiles";
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Download, FileText, Send, X } from "lucide-react";
+import { AttachmentPreview } from "@/components/attachment-preview";
+import { Calendar, Download, Eye, Send, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { UploadButton } from "@/lib/uploadthing";
@@ -14,26 +17,29 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+// import Image from "next/image";
 
-import { getPriorityColor, getPriorityIcon, getStatusColor } from "@/lib/task-methods";
+import { getPriorityColor, getPriorityIcon, getStatusColor, formatFileSize, getFileIcon } from "@/lib/task-methods";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
-import type { ITaskPopulated } from "@/db/models";
+import type { ITaskPopulated, IFile } from "@/db/models";
 
 
-interface TaskDetailViewProps {
+type TaskDetailViewProps = {
     task: ITaskPopulated
     onClose: () => void
 }
 
 export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
     const users = useUserStore((state) => state.users);
+    const { isSignedIn, user: authUser } = useUser();
     const { mutate: createComment } = useCreateComment();
-    // const { mutate: createFile } = useCreateFile();
+    const { mutate: createFile } = useCreateFile();
     const [ newComment, setNewComment ] = useState("");
-    // const [ newAttachment, setNewAttachment ] = useState<File | null>(null)
-    // const [ attachmentName, setAttachmentName ] = useState("")
+    const [ taskFiles, setTaskFiles ] = useState<IFile[]>(task.files);
+    const [ previewAttachment, setPreviewAttachment ] = useState<IFile | null>(null);
+    const [ isPreviewOpen, setIsPreviewOpen ] = useState(false);
 
     const assignee = users.find((user) => user.id === task.userId);
     const dueDate = task.dueDate;
@@ -42,37 +48,18 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
     const handleAddComment = () => {
         if (!newComment.trim()) return;
 
-        createComment({ content: newComment, userId: users[0].id, taskId: task._id })
-        setNewComment("")
+        if (!isSignedIn || !authUser) {
+            toast("You must be signed in to comment!");
+            return;
+        }
+
+        createComment({ content: newComment, userId: users[0].id, taskId: task._id });
+        setNewComment("");
     }
 
-    // const handleAddAttachment = () => {
-    //     if (!newAttachment || !attachmentName.trim()) return
-
-    //     createFile({
-    //         url: URL.createObjectURL(newAttachment),
-    //         key: "key-here",
-    //         name: attachmentName || newAttachment.name,
-    //         size: newAttachment.size,
-    //         userId: users[0]._id,
-    //         taskId: task._id,
-    //     })
-
-    //     setNewAttachment(null)
-    //     setAttachmentName("")
-    // }
-
-    // const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    //     if (e.target.files && e.target.files[0]) {
-    //         setNewAttachment(e.target.files[0])
-    //         setAttachmentName(e.target.files[0].name)
-    //     }
-    // }
-
-    const formatFileSize = (bytes: number) => {
-        if (bytes < 1024) return `${bytes} B`
-        if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-        return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+    const openPreview = (attachment: IFile) => {
+        setPreviewAttachment(attachment);
+        setIsPreviewOpen(true);
     }
 
     return (
@@ -134,38 +121,98 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                 <div className="flex items-center justify-between">
                     <h3 className="text-lg font-medium">Attachments</h3>
                     <div className="flex items-center gap-2">
-                        <UploadButton
-                            endpoint="imageUploader"
-                            onClientUploadComplete={(res) => {
-                                console.log("Files: ", res);
-                                toast("File uploaded!");
-                            }}
-                            onUploadError={(error: Error) => {
-                                console.error(error);
-                                toast("Failed to upload file");
-                            }}
-                        />
+                        <SignedIn>
+                            <UploadButton
+                                endpoint="taskAttachmentUploader"
+                                onClientUploadComplete={(res) => {
+                                    const file = res[0];
+                                    console.log("fileRes", res)
+                                    console.log("File: ", file);
+                                    createFile({
+                                        url: file.ufsUrl,
+                                        userId: file.serverData.userId,
+                                        taskId: task._id,
+                                        size: file.size,
+                                        type: file.type,
+                                        name: file.name,
+                                        key: file.key
+                                    })
+                                    setTaskFiles([
+                                        {
+                                            _id: "",
+                                            url: file.ufsUrl,
+                                            userId: file.serverData.userId,
+                                            size: file.size,
+                                            name: file.name,
+                                            type: file.type,
+                                            key: file.key,
+                                            createdAt: new Date()
+                                        }, ...taskFiles
+                                    ])
+                                    toast(`Upload complete for ${res[0].name}`);
+                                }}
+                                onUploadError={(error: Error) => {
+                                    console.error(error);
+                                    toast(`File upload failed: ${error.message}`);
+                                }}
+                            />
+                        </SignedIn>
                     </div>
                 </div>
 
-                {task.files && task.files.length > 0 ? (
-                    <div className="space-y-2">
-                        {task.files.map((attachment) => (
-                            <Card key={attachment._id} className="flex items-center justify-between p-3">
-                                <div className="flex items-center gap-2">
-                                    <FileText className="h-5 w-5 text-muted-foreground" />
-                                    <div>
-                                        <p className="font-medium">{attachment.name}</p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {formatFileSize(attachment.size)} • {format(new Date(attachment.createdAt), "MMM d, yyyy")}
-                                        </p>
+                {taskFiles && taskFiles.length > 0 ? (
+                    <div className="grid gap-2 sm:grid-cols-2">
+                        {taskFiles.map((attachment) => (
+                            <Card key={attachment._id} className="overflow-hidden p-0">
+                                <div className="pr-2 pl-2 pt-2">
+                                    <div className="flex items-center gap-2">
+                                        {getFileIcon(attachment.type)}
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium truncate">{attachment.name}</p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {formatFileSize(attachment.size)} • {format(new Date(attachment.createdAt), "MMM d, yyyy")}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <Button variant="ghost" size="icon" className="ml-2" asChild>
-                                        <a href={attachment.url} download={attachment.name}>
-                                            <Download className="h-4 w-4" />
-                                            <span className="sr-only">Download</span>
-                                        </a>
+                                </div>
+                                {/*{attachment.type.startsWith("image/") && (*/}
+                                {/*    <div className="relative h-32 w-full cursor-pointer border-t" onClick={() => openPreview(attachment)}>*/}
+                                {/*        <Image*/}
+                                {/*            src={attachment.url || "/placeholder.svg"}*/}
+                                {/*            alt={attachment.name}*/}
+                                {/*            className="object-cover"*/}
+                                {/*            fill*/}
+                                {/*        />*/}
+                                {/*        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity hover:opacity-100">*/}
+                                {/*            <Eye className="h-6 w-6 text-white" />*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*)}*/}
+                                <div className="flex border-t">
+                                    <Button variant="ghost" className="flex-1 rounded-none" onClick={() => openPreview(attachment)}>
+                                        <Eye className="mr-2 h-4 w-4" />
+                                        Preview
                                     </Button>
+                                    <Separator orientation="vertical" />
+                                    <SignedIn>
+                                        <Button variant="ghost" className="flex-1 rounded-none" asChild>
+                                            <a href={attachment.url} download={attachment.name}>
+                                                <Download className="mr-2 h-4 w-4" />
+                                                Download
+                                            </a>
+                                        </Button>
+                                    </SignedIn>
+                                    <SignedOut>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="flex-1 rounded-none"
+                                            onClick={() => toast("You must be signed in to download attachments!")}
+                                        >
+                                            <Download className="mr-2 h-4 w-4" />
+                                            Download
+                                        </Button>
+                                    </SignedOut>
                                 </div>
                             </Card>
                         ))}
@@ -180,16 +227,21 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
             <div className="space-y-4">
                 <h3 className="text-lg font-medium">Comments</h3>
 
-                <div className="flex gap-2">
+                <div className="relative">
                     <Textarea
                         placeholder="Add a comment..."
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
-                        className="min-h-[80px]"
+                        className="min-h-[80px] pr-12"
                     />
-                    <Button className="self-end" onClick={handleAddComment} disabled={!newComment.trim()}>
-                        <Send className="mr-2 h-4 w-4" />
-                        Send
+                    <Button
+                        size="icon"
+                        className="absolute bottom-4 right-2"
+                        onClick={handleAddComment}
+                        disabled={!newComment.trim()}
+                    >
+                        <Send className="h-8 w-8" />
+                        <span className="sr-only">Send</span>
                     </Button>
                 </div>
 
@@ -220,6 +272,14 @@ export function TaskDetailView({ task, onClose }: TaskDetailViewProps) {
                     <p className="text-sm text-muted-foreground">No comments yet</p>
                 )}
             </div>
+            <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
+                <DialogContent className="sm:max-w-[800px] max-h-[90vh]">
+                    <DialogHeader>
+                        <DialogTitle>{previewAttachment?.name}</DialogTitle>
+                    </DialogHeader>
+                    <AttachmentPreview previewAttachment={previewAttachment} />
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

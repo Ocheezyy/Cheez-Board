@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import {File, Task} from "@/db/models";
+import {File, ITask, Task} from "@/db/models";
 import { connectToDatabase } from "@/db/connect";
+import { UTApi } from "uploadthing/server";
 
 await connectToDatabase();
 
@@ -16,8 +17,15 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        const { url, key, name, size, userId, taskId } = await request.json();
-        const file = await File.create({ url, key, name, size, userId, taskId });
+        const { url, key, name, size, userId, taskId, type } = await request.json();
+        const task: ITask | null = await Task.findById(taskId);
+        if (!task) {
+            const utApi = new UTApi();
+            await utApi.deleteFiles([key]);
+            return NextResponse.json({ error: "Cancelled upload, task not found" });
+        }
+        const file = await File.create({ url, key, name, size, userId, taskId: task._id, type });
+        await Task.updateOne({ _id: task._id }, { $push: { files: file._id } });
         return NextResponse.json(file, { status: 201 });
     } catch (error) {
         console.error(error);

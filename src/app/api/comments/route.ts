@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Comment } from "@/db/models/comment";
 import { connectToDatabase } from "@/db/connect";
-import { Task } from "@/db/models";
+import { ITask, Task } from "@/db/models";
 
 await connectToDatabase();
 
@@ -18,7 +18,12 @@ export async function GET() {
 export async function POST(request: Request) {
     try {
         const { content, userId, taskId } = await request.json();
+        const task: ITask | null = await Task.findById(taskId);
+        if (!task) {
+            return NextResponse.json({ error: "Cancelled comment, task not found" });
+        }
         const comment = await Comment.create({ content, userId, taskId });
+        await Task.updateOne({ _id: task._id }, { $push: { comments: comment._id } });
         return NextResponse.json(comment, { status: 201 });
     } catch (error) {
         console.error(error);

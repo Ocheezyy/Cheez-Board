@@ -1,4 +1,18 @@
-import { AlertCircle, CheckCircle, Clock } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, FileText, ImageIcon, Video } from "lucide-react";
+
+export const getFileIcon = (fileType: string) => {
+    if (!fileType) return null;
+
+    if (fileType.startsWith("image/")) return <ImageIcon className="h-5 w-5 text-muted-foreground" />
+    if (fileType.startsWith("video/")) return <Video className="h-5 w-5 text-muted-foreground" />
+    return <FileText className="h-5 w-5 text-muted-foreground" />
+}
+
+export const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+}
 
 export const getStatusColor = (status: string) => {
     switch (status) {

@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { CalendarIcon } from "lucide-react";
 
 import { useUserStore } from "@/stores/useUserStore";
+import { toast } from "sonner";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -48,6 +49,11 @@ export function TaskForm({ onSubmit, isSignedIn, authUser }: TaskFormProps) {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
+    if (!isSignedIn || !authUser) {
+      toast("You must be signed in to create a task!");
+      return;
+    }
 
     onSubmit({
       title,

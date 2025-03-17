@@ -76,6 +76,7 @@ async function seed() {
     name: "cheese-board-design.png",
     size: 1024,
     userId: defaultUserId,
+    type: "image/png",
     taskId: task1._id,
   });
 
@@ -84,6 +85,7 @@ async function seed() {
     key: "file-key-67890",
     name: "wine-list.pdf",
     size: 2048,
+    type: "application/pdf",
     userId: defaultUserId,
     taskId: task2._id,
   });

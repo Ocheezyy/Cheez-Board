@@ -15,7 +15,7 @@ interface IFileDeleteSuccess {
 export function useCreateFile() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (newFile: { url: string; key: string; name: string; size: number; userId: string; taskId: string }) => {
+        mutationFn: async (newFile: { url: string; key: string; name: string; size: number; userId: string; taskId: string, type: string }) => {
             const response = await fetch("/api/files", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
