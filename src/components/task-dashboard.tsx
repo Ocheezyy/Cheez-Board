@@ -19,7 +19,7 @@ import type { TaskFilter } from "@/lib/types";
 
 export function TaskDashboard() {
   const { isSignedIn, user: authUser } = useUser();
-  const { error: getTaskError } = useTasks();
+  const { error: getTaskError, isLoading: tasksLoading } = useTasks();
   const { error: getUserError } = useUsers();
   const tasks = useTaskStore((state) => state.tasks);
   const users = useUserStore((state) => state.users);
@@ -87,7 +87,7 @@ export function TaskDashboard() {
             </div>
           </div>
           <div className="md:col-span-3">
-            <TaskList tasks={filteredTasks} users={users} onDelete={deleteTask} />
+            <TaskList tasks={filteredTasks} users={users} onDelete={deleteTask} tasksLoading={tasksLoading} />
           </div>
         </div>
       </div>

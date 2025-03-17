@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { TaskSkeleton } from "@/components/skeletons/task-skeleton";
 import { Calendar, MoreHorizontal, Trash2 } from "lucide-react";
 import { TaskDetailView } from "./task-detail-view";
 import { Button } from "@/components/ui/button";
@@ -22,11 +23,13 @@ interface TaskListProps {
   tasks: ITaskPopulated[];
   users: IUser[];
   onDelete: (taskId: string) => void;
+  tasksLoading: boolean;
 }
 
-export function TaskList({ tasks, users, onDelete }: TaskListProps) {
+export function TaskList({ tasks, users, onDelete, tasksLoading }: TaskListProps) {
   const [ viewingTask, setViewingTask ] = useState<ITaskPopulated | null>(null);
   const [ isViewDialogOpen, setIsViewDialogOpen ] = useState(false);
+
 
   const getUser = (assigneeId: string) => {
     if (users && users.length > 0) {
@@ -43,6 +46,16 @@ export function TaskList({ tasks, users, onDelete }: TaskListProps) {
   //   onUpdate(updatedTask)
   //   setViewingTask(updatedTask)
   // }
+
+  if (tasksLoading) {
+    return (
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, index) => (
+              <TaskSkeleton key={index} />
+          ))}
+        </div>
+    )
+  }
 
   if (tasks.length === 0) {
     return (
