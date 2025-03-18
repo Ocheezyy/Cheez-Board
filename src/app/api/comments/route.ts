@@ -31,21 +31,6 @@ export async function POST(request: Request) {
     }
 }
 
-export async function PUT(request: Request) {
-    try {
-        const { id, ...updateData } = await request.json();
-        const comment = await Comment.findByIdAndUpdate(id, updateData, { new: true });
-        if (!comment) {
-            return NextResponse.json({ error: "Comment not found" }, { status: 404 });
-        }
-        const task = await Task.findOne({ "comments._id": id });
-        return NextResponse.json({ comment, taskId: task?.id });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: "Failed to update comment" }, { status: 500 });
-    }
-}
-
 export async function DELETE(request: Request) {
     try {
         const { id } = await request.json();

@@ -33,21 +33,6 @@ export async function POST(request: Request) {
     }
 }
 
-export async function PUT(request: Request) {
-    try {
-        const { id, ...updateData } = await request.json();
-        const file = await File.findByIdAndUpdate(id, updateData, { new: true });
-        if (!file) {
-            return NextResponse.json({ error: "File not found" }, { status: 404 });
-        }
-        const task = await Task.findOne({ "files._id": id });
-        return NextResponse.json({ file, taskId: task?.id });
-    } catch (error) {
-        console.error(error);
-        return NextResponse.json({ error: "Failed to update file" }, { status: 500 });
-    }
-}
-
 export async function DELETE(request: Request) {
     try {
         const { id } = await request.json();
