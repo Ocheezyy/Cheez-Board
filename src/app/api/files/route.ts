@@ -57,6 +57,7 @@ export async function DELETE(request: Request) {
         if (!file) {
             return NextResponse.json({ error: "File not found" }, { status: 404 });
         }
+        await Task.updateOne({ "files._id": id }, { $pull: { files: id }});
         return NextResponse.json({ message: "File deleted", taskId: task?.id });
     } catch (error) {
         console.error(error);

@@ -55,7 +55,7 @@ export async function DELETE(request: Request) {
         if (!comment) {
             return NextResponse.json({ error: "Comment not found" }, { status: 404 });
         }
-
+        await Task.updateOne({ "comments._id": id }, { $pull: { comments: id }});
         return NextResponse.json({ message: "Comment deleted", taskId: task?.id });
     } catch (error) {
         console.error(error);

@@ -65,6 +65,15 @@ export function TaskDashboard() {
     })
   }
 
+  const handleDeleteTask = (taskId: string) => {
+    if (!isSignedIn || !authUser) {
+      toast("You must be signed in to delete a task!");
+      return;
+    }
+
+    deleteTask(taskId);
+  }
+
   const allCount = tasks.length;
   const todoCount = tasks.filter((task) => task.status === "todo").length;
   const inProgressCount = tasks.filter((task) => task.status === "in_progress").length;
@@ -87,7 +96,7 @@ export function TaskDashboard() {
             </div>
           </div>
           <div className="md:col-span-3">
-            <TaskList tasks={filteredTasks} users={users} onDelete={deleteTask} tasksLoading={tasksLoading} />
+            <TaskList tasks={filteredTasks} users={users} onDelete={handleDeleteTask} tasksLoading={tasksLoading} />
           </div>
         </div>
       </div>
